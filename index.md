@@ -4,4 +4,4 @@
     -Atahan Şenşatar
     -Batuhan Arslan
     
-## [ODD Assignment](github.com/pjournal/mef03g-r-mut//assignment.html)
+## [ODD Assignment](https://pjournal.github.io/mef03g-r-mut//assignment.html)
