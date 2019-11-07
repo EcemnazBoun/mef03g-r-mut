@@ -7,4 +7,5 @@
     -Tibet Erdoğan
     -Nilay Kamar
     
-## [ODD Assignment](assignment.html)
+## ODD Assignment
+[ODD Assignment](assignment.html)
