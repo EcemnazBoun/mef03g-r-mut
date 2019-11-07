@@ -7,4 +7,4 @@
     -Tibet Erdoğan
     -Nilay Kamar
     
-## [ODD Assignment](https://pjournal.github.io/mef03g-r-mut//assignment.html)
+## [ODD Assignment](assignment.html)
