@@ -25,7 +25,7 @@ tmp<-tempfile(fileext=".xlsx")
 
 download.file("https://github.com/pjournal/mef03g-r-mut/raw/master/BES/EGM_DATA.xlsx",destfile = tmp)
 
-BES <- readxl::read_excel("ornek.xlsx",col_names = F ,skip = 2)
+BES <- readxl::read_excel(tmp,col_names = F ,skip = 2)
 
 file.remove(tmp)
 ```
