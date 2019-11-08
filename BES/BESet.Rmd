@@ -1,0 +1,110 @@
+---
+title: "BES Assignment"
+author: "R - mut"
+date: "08 11 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+## First Step : Call Necessary Libraries
+
+```{r}
+library(ggplot2)
+library(dplyr)
+library(tidyverse)
+library(lubridate)
+```
+
+## Download Data From Source
+```{r}
+tmp<-tempfile(fileext=".xlsx")
+download.file("https://github.com/pjournal/mef03g-r-mut/raw/master/BES/EGM_DATA.xlsx",destfile = tmp)
+BES <- readxl::read_excel(tmp,col_names = F ,skip = 2)
+file.remove(tmp)
+```
+## Check What is
+
+```{r}
+head(BES)
+tail(BES)
+```
+
+## Organize the Data 
+```{r}
+colnames(BES) <- c("pension_fund_company",	"n_of_participants",	"fund_size_participants",	"gov_contribution",	"contribution",	"date",	"n_of_pensioners",	"n_of_ind_contracts",	"n_of_group_ind_contracts",	"n_of_employer_group_certificates",	"n_total",	"size_of_ind_contracts",	"size_of_group_ind_contracts",	"size_of_employer_group_certificates",	"size_total")
+BES$date <- ymd(BES$date)
+```
+
+## A Opinion About Companies
+```{r}
+mean_participant_list <- BES %>%
+  group_by(pension_fund_company) %>% arrange(pension_fund_company) %>%
+  summarise(mean_participant = mean(n_of_participants/1000000)) %>%
+  arrange(desc(mean_participant)) %>%
+  top_n(10)
+ggplot(mean_participant_list,aes(x=pension_fund_company,y = mean_participant))+
+  geom_bar(stat ="identity")+
+  theme(axis.text.x = element_text(angle=90))
+```
+
+## A little bit makeup for our plot
+```{r}
+barplot <- ggplot(mean_participant_list,aes(x=pension_fund_company,y = mean_participant))+
+  geom_bar(stat ="identity")+
+  theme(axis.text.x = element_text(angle=90))
+barplot <- barplot + labs(title ="Top 10 Companies",
+                                                      caption ="Data Source: Mean Participant df",
+                                                      x = "Company Name",
+                                                      y = "Participant as Millions")
+print(barplot)
+```
+
+## Analysis About Participants for 3 Month Interval
+
+```{r}
+top_10_vec <- unlist(mean_participant_list$pension_fund_company)
+analysis_list <- BES %>%
+  filter(pension_fund_company %in% top_10_vec) %>%
+  arrange(date)  %>%
+  mutate(participants=n_of_participants/1000000) %>%
+  select(date,pension_fund_company,participants)
+analysis_plot <- BES %>%
+  filter(pension_fund_company %in% top_10_vec) %>%
+  arrange(date)  %>%
+  mutate(participants=n_of_participants/1000000) %>%
+  select(date,pension_fund_company,participants)
+analysis_plot <- ggplot(analysis_list,aes(x=date,y=participants,color=pension_fund_company))+
+  geom_line()+
+  scale_x_date(date_breaks = "3 month")+
+  theme(axis.text.x = element_text(size = 8,angle=45))
+  
+analysis_plot <- analysis_plot + labs(title = "Variation of the number of participants over time",
+                                      x = "Dates",
+                                      y = "Number of participants(Millions)",
+                                      colour = " ")
+print(analysis_plot)
+```
+## Analysis pension fund company according to total pension fund size according to years
+```{r}
+aa <- BES %>% mutate(YEAR = year(date)) %>%  
+  group_by(pension_fund_company, YEAR) %>%
+  summarise(sum_size_total=sum(size_total)) %>%
+  arrange(desc(sum_size_total)) %>%
+  filter(sum_size_total > 165000000000) 
+  print(aa)
+```
+## Show the analysis with data plotted by year
+```{r}
+aa %>%
+  ggplot(data = ., aes(x = pension_fund_company, y = sum_size_total, fill = pension_fund_company)) +
+      geom_bar(stat = "identity") + theme(axis.text = element_text(angle = 90)) +
+  facet_wrap(~ YEAR, ncol = 3) + labs(title = "Total Yearly Company Size",
+           subtitle = "Data plotted by year",
+           y = "Sum size total",
+           x = "Company") 
+```
+
+## Conclusion 
+While Avivasa Emeklilik and Anadolu Emeklilik show a competition but steady increase, Vakıf Emeklilik constantly increase and Ziraat shows down and up according to years
