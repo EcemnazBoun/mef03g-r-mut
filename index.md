@@ -11,4 +11,4 @@
 [ODD Assignment](assignment.html)
 
 ## EGM Assignment
-[EGM Assignment](BESet.html)
+[EGM Assignment](BES/BESet.html)
