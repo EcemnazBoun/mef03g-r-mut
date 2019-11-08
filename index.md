@@ -9,3 +9,6 @@
     
 ## ODD Assignment
 [ODD Assignment](assignment.html)
+
+## EGM Assignment
+[EGM Assignment](BESet.html)
