@@ -29,5 +29,7 @@ We get the global food and prices data between 1990 and 2019 from https://data.h
 ### Analysis Objectives
 
 -Analysis of  “I always buy fifty Turkish Liras worth of gasoline”
+
 -Analysis of tomato prices for all countries
+
 -Analysis of Turkish food prices between and 1990 and 2019
