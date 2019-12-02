@@ -18,6 +18,8 @@
 ### Brief
 We will analyze TCMB interest policy effects on different commodity prices and banking
 
+(https://www.tcmb.gov.tr/wps/wcm/connect/TR/TCMB+TR/Main+Menu/Temel+Faaliyetler/Para+Politikasi/Merkez+Bankasi+Faiz+Oranlari/faiz-oranlari)
+
 ### Learning Objectives
 
 -Handling with big dataset
