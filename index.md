@@ -32,3 +32,4 @@ We will analyze TCMB interest policy effects on different commodity prices and b
 
 - Analysis of domestic invest change and unemployment rate
 - Analysis of consumer price index 
+- Analysis of foreign trade statistics
