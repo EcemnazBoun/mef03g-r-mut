@@ -1,0 +1,215 @@
+---
+title: "'R'mut Group Project"
+author: ""
+output: 
+    html_document:
+      code_folding: hide
+      theme: united
+---
+
+
+
+
+## Key takeaways
+
+
+We analyzed effect of TCMB interest rates on economy and our results :
+
+*Interest rates don't work alone even if it's a big instrument to balance the dollar
+
+
+## Overview and Preliminary
+
+We get TCMB interest rate as a main data and USD/TRY.................... data it was a small data but very open the interpretation
+
+
+
+Objectives :
+
+ * Get raw data and arrange according to the result we want to learn
+ * After put in order data visualize it and make INFERENCES
+ * Find the areas most affected by interest rates
+ 
+ 
+ 
+## Explore and Cleaning data
+
+Our main dataset was small and clean but when we need comparisons other data we needed the make it compatible with main data.
+
+First we need necessary libraries
+
+```{r message=FALSE, warning=FALSE}
+knitr::opts_chunk$set(echo = TRUE,warning=FALSE)
+library(readr)
+library(dplyr)
+library(lubridate)
+library(ggplot2)
+library(readxl)
+```
+
+
+```{r}
+# Create a temporary file
+tmp <- tempfile(fileext=".xlsx")
+
+# Download file from repository to the temp file
+download.file("https://github.com/pjournal/mef03g-r-mut/raw/master/project_datasets/tcmb_faiz.xlsx",destfile = tmp)
+tcmb_int_table <- readxl::read_excel(tmp)
+
+```
+
+```{r message=FALSE, warning=FALSE}
+tmp2 <- tempfile(fileext = ".csv")
+download.file("https://github.com/pjournal/mef03g-r-mut/raw/master/project_datasets/USD_TRY.csv",destfile = tmp2)
+usd_tl <- read_csv(tmp2)
+```
+
+
+
+```{r}
+str(tcmb_int_table)
+```
+
+```{r}
+usd_tl
+```
+
+```{r}
+str(usd_tl)
+```
+
+I need convert date column format for easy using
+
+```{r}
+usd_tl_dp <- usd_tl %>% select("Date","Price") 
+
+usd_tl_dp
+```
+
+
+```{r}
+#I need convert date column format for easy using
+
+usd_tl_dp$Date <- parse_date_time(usd_tl_dp$Date,orders = c("my"))
+
+str(usd_tl_dp)
+
+```
+
+
+
+```{r}
+graph1 <- ggplot(tcmb_int_table,aes(tcmb_int_table$year,tcmb_int_table$rate))+
+geom_line(color="blue")+scale_y_continuous(
+  "Interest Rate(%)",
+  sec.axis = sec_axis(~ . * 0.33,name = "USD/TRY")
+)+
+  ggtitle("TCMB Interest Rates")+xlab("Years") +theme(plot.title = element_text(color = "cadetblue4",size=20))
+
+graph1 <- graph1 +  geom_line(data=usd_tl_dp,aes(Date,Price*3),color="red") + ggtitle(("TCMB Interest Rates vs USD/TRY"))
+graph1
+
+```
+
+
+
+
+```{r message=FALSE, warning=FALSE}
+tmp3 <- tempfile(fileext = ".csv")
+download.file("https://github.com/pjournal/mef03g-r-mut/blob/master/project_datasets/tech.csv",destfile = tmp3)
+tech <- read_csv(tmp3)
+```
+
+```{r}
+tech <- read.csv("tech.csv", header=TRUE, sep=",",skip = 1)
+colnames(tech) <- c("country_name","country","date","indicator_name","indicator_code","value")
+
+```
+
+
+## Dot Plot the techonology data and see what it has
+```{r}
+library(scales)
+theme_set(theme_classic())
+
+# Plot
+ ggplot(tech, aes(x=indicator_name, y=value)) + 
+  geom_point(col='#e67e22', size=3) +   # Draw points
+  geom_segment(aes(x=indicator_name, 
+                   xend=indicator_name, 
+                   y=min(value), 
+                   yend=max(value)), 
+               linetype="dashed", 
+               size=0.1) +  # Draw dashed lines
+  labs(title="Dot Plot", 
+       subtitle="İndicators vs Values") +  
+  coord_flip()
+```
+## Analysis of technology indicators
+```{r}
+ht <- tech%>%group_by(indicator_name,value,date)%>%filter(indicator_name == "High-technology exports (current US$)")%>%summarise(mean_value = mean(value/1000000))%>%arrange(desc(value))%>%group_by(date)
+ch <- tech %>%group_by(indicator_name,value,date)%>%filter(indicator_name == "Charges for the use of intellectual property, payments (BoP, current US$)")%>%arrange(desc(value))%>%group_by(date)
+```
+```{r}
+unht <- tech%>%group_by(date)%>% summarise(mean_value = mean(value/1000000))%>%arrange(desc(mean_value))%>%filter(date > 2010 & date < 2018)
+```
+##ompare between High tech and the other indicators
+```{r}
+all <- inner_join(ht,unht,by = c("date"))
+
+ggplot(all, aes(x = date)) + 
+  geom_line(aes(y = mean_value.x, colour = "High-technology exports")) +
+  geom_line(aes(y = mean_value.y, colour = "other mean")) +
+  xlab("Years") + ylab("Normalized Prices")  
+```
+
+```{r}
+irate <- tcmb_int_table%>%mutate(date = year(year))
+indicators <- tech %>% group_by(date,indicator_name)%>%filter(indicator_name %in% c("High-technology exports (current US$)", "Charges for the use of intellectual property, payments (BoP, current US$)","Charges for the use of intellectual property, receipts (BoP, current US$)")) %>%group_by(indicator_name)
+
+
+all2 <- inner_join(irate,all,by = c("date"))
+```
+
+```{r}
+g<-  ggplot(indicators, aes(x = date, y = value/100000000, colour=indicator_name)) + 
+  geom_line() + 
+  geom_point()+ 
+  labs( x="" , y = "Tech Invest Value")+ 
+  theme(legend.position = "bottom", legend.title = element_blank(), axis.text.x = element_text(size = 10)) 
+g <- g +  geom_smooth(data=all2,aes(date,rate)) + ggtitle(("Tech Invest Rates vs Interest rates"))+  theme(axis.text.x = element_text(colour = "grey20", size = 10, angle = 45, hjust = 0.5, vjust = 0.5),
+        axis.text.y = element_text(colour = "grey20", size = 10),
+        text = element_text(size = 7),
+        legend.position = "top", legend.box = "vertical" )
+g
+
+```
+
+```{r}
+theme_set(theme_bw())
+g <- ggplot(all2, aes(date, value/100000000)) + 
+  labs(title="TECH INVEST VS INTEREST RATE")
+
+g + geom_jitter(aes(col=indicator_name, size=rate)) + 
+  geom_smooth(aes(col=indicator_name), method="lm", se=F)+theme_light() +
+  theme(axis.text.x = element_text(colour = "grey20", size = 10, angle = 45, hjust = 0.5, vjust = 0.5),
+        axis.text.y = element_text(colour = "grey20", size = 10),
+        text = element_text(size = 8),
+        legend.position = "right", legend.box = "vertical" )
+      
+```
+
+
+
+```{r}
+graph1 <- ggplot(unht,aes(date,mean_value/35)) +ggtitle("Tech Invest Rates")+xlab("Years")+ylab("Rates(%)") +geom_smooth(se = FALSE, stat='summary',fun.y=quantile,fun.args=list(probs=0.9),color='blue')+theme(plot.title = element_text(color = "grey20",size=20))+scale_y_continuous(
+  "Interest Rate(%)",
+  sec.axis = sec_axis(~ . * 0.5,name = "Interest rates")
+)
+graph1 <- graph1 +  geom_smooth(se = FALSE, data=all2,aes(date,rate),color='red') + ggtitle(("Tech Invest Rates vs Interest rates"))+theme(plot.title = element_text(color = "grey20",size=20)) 
+graph1
+```
+
+
+
+
