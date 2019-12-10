@@ -1,0 +1,118 @@
+---
+title: "Rproject"
+author: "Tibet Erdoğan"
+date: "07 12 2019"
+output: html_document
+---
+
+
+
+```{r}
+library(tidyverse)
+library(ggplot2)
+library(readxl)
+library(lubridate)
+library(forecast)
+library(RColorBrewer)
+library(quantreg)
+```
+
+
+### Preparation
+```{r}
+interest <- read_excel("interest.xlsx", col_names = FALSE,skip = 15)
+gsyh <- read_excel("GSYH.xlsx")
+colnames(interest) <- c("year","rate")
+colnames(gsyh) <- c("year","rate")
+interest$year <- as_date(interest$year)
+gsyh$year <- as_date(gsyh$year)
+```
+
+
+## 1. Data Explanation
+```{r}
+#### Our data obtained from TUIK database. We want to emphazize the effect of interest rate increases on GDP Growth rate. Firstly we examine growth rate and interest rate separately. Then, We join growth rate ratio and interest rate in order to see the relation between them.
+
+```
+
+
+
+
+### Overview of Interest Rates
+
+#### The graph shows the rate of interest rates over the last 2 years. If we look at the graph starting from June 2018 interest rates increased dramatically up to July 2019. After July 2019 trend has changed and interest rates started to decrease up to now. 
+
+```{r}
+lbls <- paste0(month.abb[month(interest$year)], " ", lubridate::year(interest$year))
+brks <- interest$year
+
+
+
+
+overview_interest <- ggplot(interest, aes(x=year, y=rate)) + 
+  geom_line(color="red") + geom_smooth()+
+  labs(title="Interest Rates Chart",
+       subtitle="Interest over the Last Years", 
+       caption="Source: TUIK", 
+       y="Rate") +  
+   scale_x_date(labels = lbls, 
+               breaks = brks)+
+  theme(axis.text.x = element_text(angle = 90, vjust=5),  
+        panel.grid.minor = element_blank()) + theme_classic()
+
+overview_interest
+
+```
+
+### Overview of GDP Growth Rates
+#### The graph shows the rate of gdp growth rate over the last 2 years. If we look at the graph starting from March 2018 gdp growth rates decreased dramatically up to December 2018. After December 2018 trend has changed and gdp growth rates started to increase up to now.
+
+
+```{r}
+lbls1 <- paste0(month.abb[month(gsyh$year)], " ", lubridate::year(gsyh$year))
+brks1 <- gsyh$year
+
+ggplot(gsyh, aes(x=year,y=rate)) + 
+  geom_line(color = "red") + 
+  labs(title="GDP Growth Rate ", 
+       subtitle="GDP Growth Rate over the last years", 
+       caption="Source: TUIK", 
+       y="Rate",
+       x="Quarter") +  
+   scale_x_date(labels = lbls1, 
+               breaks = brks1)+
+  theme(axis.text.x = element_text(angle = 90, vjust=0.5),  
+        panel.grid.minor = element_blank()) + theme_classic()
+```
+
+
+
+### Correlation Between Interest Rate and GDP Growth Rate
+
+#### First, We gain interest rates and gdp growth rates from 2012 to 2019. To analyze the relation between those variables we use Stacked Area Chart and geom_line respectively.Graphs below shows the relationship between Interest Rate and GDP Growth Rate. We can clearly see that as interest rate increases, GDP growth rate decreases. According to those graphs, We can summarize that Higher interest rates tend to moderate economic growth.Higher interest rates tend to reduce the rate of economic growth and inflationary pressures. We can see that, Turkey has increased her economic growth with decreasing interest rates.
+```{r}
+full <- read_excel("a.xlsx")
+
+
+
+corr <- ggplot(full, aes(x=year)) + 
+  geom_area(aes(y=interest_rate+gdp_rate, fill="interest")) + 
+  geom_area(aes(y=gdp_rate, fill="gdp")) + 
+  labs(title="Correlation between Interest and GDP Growth", 
+       caption="Source: TUIK", 
+       y="Rate %") +  
+  theme(panel.grid.minor = element_blank())  +theme_classic()
+  
+corr
+
+corr2 <- ggplot(full, aes(year,size = 0,05)) + 
+  geom_line(aes(y = interest_rate, colour = "Interest Rate")) + 
+  geom_line(aes(y = gdp_rate, colour = "GDP Growth Rate"))  + labs(title="Correlation between Interest and GDP Growth", 
+       caption="Source: TUIK", 
+       y="Rate %") + theme_classic()
+       
+corr2
+```
+
+
+  
