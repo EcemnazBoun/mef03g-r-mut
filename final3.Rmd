@@ -249,7 +249,7 @@ all <- inner_join(ht,unht,by = c("date"))
 ggplot(all, aes(x = date)) + 
   geom_line(aes(y = mean_value.x, colour = "High-technology exports")) +
   geom_line(aes(y = mean_value.y, colour = "other mean")) +
-  xlab("Years") + ylab("Normalized Prices")  +
+  xlab("Years") + ylab("Value")  +
   theme_light()
 ```
 The plot shows us there is a relation between indicators and interest rate. When the interest rate is going to down, some indicators which are making big exports are going to up.
