@@ -12,22 +12,23 @@ output:
 ---
  Group Members:
  
-* Atahan Şenşatar [Linkedin]()
+* [Atahan Şenşatar](https://pjournal.github.io/mef03-atahan01/)
 
-* Batuhan [Linkedin]()
+* [Batuhan Arslan](https://pjournal.github.io/mef03-arslnbatu/)
 
-* Cem Özçilingir [Linkedin]()
+* [M.Cem Özçilingir](https://pjournal.github.io/mef03-mclngr/)
 
-* Nilay Kamar [Linkedin](https://www.linkedin.com/in/kamarnilay/)
+* [Tibet Erdoğan](https://pjournal.github.io/mef03-tibeterdogan/)
 
-* Tibet Erdoğan [Linkedin]()
+* [Nilay Kamar](https://pjournal.github.io/mef03-kamarn/)
 
 # Key takeaways
 
 We analyzed effect of TCMB interest rates on economy and our results :
 
-* Interest rates don't work alone even if it's a big instrument to balance the dollar
-* Interest rates how can affect to Turkey about technology and science exports but not all the development just high techonogy export
+* Interest rates don't work alone even if it's a big instrument to balance the dollar.
+* Interest rates how can affect to Turkey about technology and science exports but not all the development just high techonogy export.
+* Relationship between interest rates and inflation are examined
 
 # Overview and Preliminary
 
@@ -63,13 +64,16 @@ tmp2 <- tempfile(fileext=".xlsx")
 tmp3 <- tempfile(fileext=".xlsx")
 tmp4 <- tempfile(fileext=".csv")
 tmp5 <- tempfile(fileext=".xlsx")
+
 # Download file from repository to the temp file
+
 download.file("https://github.com/pjournal/mef03g-r-mut/raw/master/project_datasets/tcmb_faiz.xlsx", destfile = tmp)
 download.file("https://github.com/pjournal/mef03g-r-mut/raw/master/project_datasets/USD_TRY.csv", destfile = tmp1)
 download.file("https://github.com/pjournal/mef03g-r-mut/raw/master/project_datasets/CPI.xlsx", destfile = tmp2)
 download.file("https://github.com/pjournal/mef03g-r-mut/raw/master/project_datasets/PPI.xlsx", destfile = tmp3)
 download.file("https://github.com/pjournal/mef03g-r-mut/raw/master/project_datasets/tech.csv",destfile = tmp4)
 download.file("https://github.com/pjournal/mef03g-r-mut/raw/master/project_datasets/interest_rate_and_foreign_trade.xlsx",destfile = tmp5)
+
 interest_rate <- readxl::read_excel(tmp)
 usd_tl <- read_csv(tmp1)
 consumer_price_index <- readxl::read_excel(tmp2)
