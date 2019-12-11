@@ -423,4 +423,6 @@ ggplot(foreign_trade, aes(x = Date)) +
 
 # Conclusion
 
+Interest rate and current account deficit are inversely proportional to each other. Except for some periods, while one moves upwards, the other moves downwards.
+
 # References
