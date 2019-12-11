@@ -337,8 +337,10 @@ However we are not going to say that there is not enough evidence to make a deci
 
 # Relationship Between Interest Rate And Foreign Trade
 
-The last day of each month were added as a date, the foreign trade figure of each month were added as a value and the valid interest rate for each date were added to rows for each date. Interest rates which did not coincide with any date were excluded from the dataset. 2010-05-31 is the first date and 2019-10-31	is the last date.
-Assigning the columns in the dataset to variables to increase readability
+The last day of each month were added as a date, the foreign trade figure of each month were added as a value and the valid interest rate for each date were added to rows for each date. Interest rates which did not coincide with any date were excluded from the dataset. 2010-05-31 is the first date and 2019-10-31 is the last date. Foreign trade data source is TÜİK.
+
+
+## Assigning the columns in the dataset to variables to increase readability
 ```{r message = FALSE, warning = FALSE}
 Exports <- foreign_trade$exports/1000000
 Imports <- foreign_trade$imports/1000000
