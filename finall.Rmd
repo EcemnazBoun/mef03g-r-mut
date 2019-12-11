@@ -396,7 +396,7 @@ ggplot(foreign_trade, aes(x = Date, y = Balance)) +
 
 ## Comparison of interest rate and current account deficit
 
-The graph shows the relationship between interest rate and current account deficit. It shows that they are inversely proportional to each other. Except for some periods, while one moves upwards, the other moves downwards.
+The graph shows the relationship between interest rate and current account deficit. Except for some periods, while one moves upwards, the other moves downwards.
 
 ```{r message = FALSE, warning = FALSE}
 ggplot(foreign_trade, aes(x = Date)) +
@@ -423,6 +423,6 @@ ggplot(foreign_trade, aes(x = Date)) +
 
 # Conclusion
 
-Interest rate and current account deficit are inversely proportional to each other. Except for some periods, while one moves upwards, the other moves downwards.
+Interest rate and current account deficit mostly moves in the opposite direction. Except for some periods, while one moves upwards, the other moves downwards.
 
 # References
