@@ -7,19 +7,25 @@ output:
       theme: united
 ---
 
-## Key takeaways
+## Group Members
+* Atahan Şenşatar [Linkedin]()
+* Batuhan [Linkedin]()
+* Cem Özçilingir [Linkedin]()
+* Nilay Kamar [Linkedin](https://www.linkedin.com/in/kamarnilay/)
+* Tibet Erdoğan [Linkedin]()
+
+## 1. Key takeaways
 
 We analyzed effect of TCMB interest rates on economy and our results :
 
--Interest rates don't work alone even if it's a big instrument to balance the dollar
+* Interest rates don't work alone even if it's a big instrument to balance the dollar
+* Interest rates how can affect to Turkey about technology and science exports but not all the development just high techonogy export
 
--Interest rates how can affect to Turkey about technology and science exports but not all the development just high techonogy export
-
-## Overview and Preliminary
+## 2. Overview and Preliminary
 
 We get TCMB interest rate as a main data and USD/TRY, technology indicators exports, data it was a small data but very open the interpretation
 
-## Objectives:
+## 3. Objectives:
  
  * Get raw data and arrange according to the result we want to learn
  * After put in order data visualize it and make INFERENCES
@@ -27,7 +33,7 @@ We get TCMB interest rate as a main data and USD/TRY, technology indicators expo
  * Finding more efficient reason with various data.
  * Using all dataset to find optimal solution.
  
-## Explore and Cleaning data
+## 4. Explore and Cleaning data
 Our main dataset was small and clean but when we need comparisons other data we needed the make it compatible with main data.
 Firstly, we need necessary libraries:
 ```{r message=FALSE, warning=FALSE}
@@ -40,7 +46,7 @@ library(readxl)
 library(tidyr)
 library(plotly)
 ```
-## Data Loading
+## 5. Data Loading
 ```{r message=FALSE, warning=FALSE, include=FALSE}
 # Create a temporary files to download our data
 tmp <- tempfile(fileext=".xlsx")
@@ -76,7 +82,7 @@ str(consumer_price_index[1:5])
 ```{r}
 str(producer_price_index[1:5])
 ```
-## Data Type Converting
+## 6. Data Type Converting
 Since the "year" column appears a categorical variable on consumer price index, producer price index and interest rate datasets, it should be converted it to date with as.Date functon to more convenient analysis. Also, some columns are renamed to easy understanding.
 ```{r}
 interest_rate <- interest_rate %>%
@@ -98,7 +104,7 @@ general_price_index <- general_price_index %>%
 general_price_index$index_type <- as.factor(general_price_index$index_type)
 str(general_price_index)
 ```
-## Analysis
+## 7. Analysis
 Let's look at the graph of the interest rates change over the years.
 ```{r pressure, echo=TRUE, warning=FALSE, paged.print=TRUE}
 c <- ggplot(interest_rate, aes(x=year, y=rate, group=1)) +
@@ -115,7 +121,9 @@ c <- ggplotly(c)
 c
 ```
 As can be seen from the graph, interest rates determined by TCMB showed volatility and increased momentum.
-## USD/TRY relation
+
+### 7.1 USD/TRY relation
+
 ```{r}
 interest_rate$year <- as.POSIXct(interest_rate$year)
 usd_tl_dp$Date <- as.POSIXct(usd_tl_dp$Date)
@@ -132,7 +140,9 @@ graph_usdTL <- graph_usdTL +
   ggtitle(("TCMB Interest Rates vs USD/TRY"))
 graph_usdTL
 ```
-## Inflation vs. Interest Rates
+
+### 7.2 Inflation vs. Interest Rates
+
 There are many discussions on the relationship between interest and inflation. Inflation refers to the rate at which prices for goods and services rise. To examine this relationship, let us examine the producer price index and consumer price index data. 
 Although the graph values show an increasing change, it is also necessary to calculate the monthly and annual changes in interest rates in order to more convenient analysis.
 ```{r, echo=TRUE, message=TRUE, warning=FALSE, paged.print=TRUE}
@@ -198,8 +208,10 @@ graph_average <- ggplot(data = average) +
 graph_average <- ggplotly(graph_average)
 graph_average
 ```
-## Technology Exports vs. Interest Rate
-### Dot Plot the techonology data and see what it has
+
+### 7.3 Technology Exports vs. Interest Rate
+
+#### 7.3.1 Dot Plot the techonology data and see what it has
 
 ```{r warning=FALSE}
 library(scales)
@@ -220,8 +232,8 @@ ggplot(tech, aes(x=indicator_name, y=value)) +
 In this plot show us, high techonology exports are above the other so we can take this indicator to do analysis with interest rate.
 However, we are gonna use two more indicators which are Charges for the use of intellectual property, payments (BoP, current US$) and Charges for the use of intellectual property, receipts (BoP, current US$) to be sure for our analysis.
 
+#### 7.3.2 Analysis of technology indicators
 
-### Analysis of technology indicators
 ```{r}
 ht <- tech %>% 
   group_by(indicator_name, value, date) %>%
@@ -241,7 +253,8 @@ unht <- tech %>% group_by(date) %>%
 Analysis for hig tech to make usable data for compare interest rate. We are going to calculate mean value for all indicators to compare other plots.
 The other one which is using just high tech to find any increasing, then take just Charges for the use of intellectual property, payments (BoP, current US$). The last one is going to filter significant dates used the same with interest rate.
 
-### Compare between High tech and the other indicators
+#### 7.3.3 Compare between High tech and the other indicators
+
 Firstly we looked the indictaors which can be usable the select the benefical one.
 
 ```{r}
@@ -249,11 +262,12 @@ all <- inner_join(ht,unht,by = c("date"))
 ggplot(all, aes(x = date)) + 
   geom_line(aes(y = mean_value.x, colour = "High-technology exports")) +
   geom_line(aes(y = mean_value.y, colour = "other mean")) +
-  xlab("Years") + ylab("Value")  +
+  xlab("Years") + ylab("Normalized Prices")  +
   theme_light()
 ```
 The plot shows us there is a relation between indicators and interest rate. When the interest rate is going to down, some indicators which are making big exports are going to up.
-## Join two tables to analyze
+
+#### 7.3.4 Join two tables to analyze
 
 ```{r}
 indicators <- tech %>% group_by(date, indicator_name) %>% 
@@ -261,6 +275,7 @@ indicators <- tech %>% group_by(date, indicator_name) %>%
   group_by(indicator_name)
 all2 <- inner_join(interest_rate, indicators, by = c("date"))
 ```
+
 ```{r}
 g <- ggplot(indicators, aes(x = date, y = value/100000000, colour=indicator_name)) + 
   geom_line() + 
@@ -278,6 +293,7 @@ g <- g +  geom_smooth(data=all2, aes(date,rate)) +
         legend.position = "top", legend.box = "vertical" )
 g
 ```
+
 ```{r}
 theme_set(theme_bw())
 g <- ggplot(all2, aes(date, value/100000000)) + 
@@ -290,6 +306,7 @@ g + geom_jitter(aes(col=indicator_name, size=rate)) +
         legend.position = "right", legend.box = "vertical" )
       
 ```
+
 ```{r}
 graph1 <- ggplot(unht,aes(date,mean_value/35)) +
   ggtitle("Tech Invest Rates")+xlab("Years")+ylab("Rates(%)") +
@@ -304,13 +321,14 @@ graph1 <- graph1 +
   theme(plot.title = element_text(color = "grey20",size=20)) 
 graph1
 ```
-## Conclusion of techonolgy export and interest rate relationship
+
+#### 7.3.5 Conclusion of techonolgy export and interest rate relationship
+
 And again we are going to see rates and indicators name. The last tech exports analysis is going to compare between tech export and interest rates.
 However we are not going to say that there is not enough evidence to make a decision.
 
+### 7.4 Relationship Between Interest Rate And Foreign Trade
 
-
-## Relationship Between Interest Rate And Foreign Trade
 The last day of each month were added as a date, the foreign trade figure of each month were added as a value and the valid interest rate for each date were added to rows for each date. Interest rates which did not coincide with any date were excluded from the dataset. 2010-05-31 is the first date and 2019-10-31	is the last date.
 Assigning the columns in the dataset to variables to increase readability
 ```{r message = FALSE, warning = FALSE}
@@ -321,7 +339,9 @@ Date <- foreign_trade$date
 Rate <- foreign_trade$interest_rate
 Deficit <- Balance*(-1)
 ```
-### Graph of exports (USD in billions)
+
+#### 7.4.1 Graph of exports (USD in billions)
+
 ```{r message = FALSE, warning = FALSE}
 ggplot(foreign_trade, aes(x = date, y = exports)) +
   geom_bar(stat ='identity', color = 'gray', fill = 'gray') +
@@ -333,7 +353,7 @@ ggplot(foreign_trade, aes(x = date, y = exports)) +
   theme_classic()
 ```
 
-### Graph of imports (USD in billions)
+#### 7.4.2 Graph of imports (USD in billions)
 
 ```{r message = FALSE, warning = FALSE}
 ggplot(foreign_trade, aes(x = Date, y = Imports)) +
@@ -346,7 +366,7 @@ ggplot(foreign_trade, aes(x = Date, y = Imports)) +
   theme_classic()
 ```
 
-### Graph of foreign trade balance (USD in billions)
+#### 7.4.3 Graph of foreign trade balance (USD in billions)
 
 ```{r message = FALSE, warning = FALSE}
 ggplot(foreign_trade, aes(x = Date, y = Balance)) +
@@ -360,7 +380,7 @@ ggplot(foreign_trade, aes(x = Date, y = Balance)) +
   theme_classic()
 ```
 
-### Comparison of interest rate and current account deficit
+#### 7.4.4 Comparison of interest rate and current account deficit
 
 ```{r message = FALSE, warning = FALSE}
 ggplot(foreign_trade, aes(x = Date)) +
@@ -384,3 +404,10 @@ ggplot(foreign_trade, aes(x = Date)) +
        x = "Year") +
   theme_classic()
 ```
+
+## 8. Conclusion
+
+## 9. References
+
+
+
