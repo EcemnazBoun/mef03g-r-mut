@@ -400,7 +400,7 @@ The graph shows the relationship between interest rate and foreign trade deficit
 
 ```{r message = FALSE, warning = FALSE}
 ggplot(foreign_trade, aes(x = Date)) +
-  geom_line(aes(y = Deficit, color = 'CAD (USD in billions)')) +
+  geom_line(aes(y = Deficit, color = 'FTD (USD in billions)')) +
   geom_line(aes(y = Rate, color = 'Interest Rate (%)')) +
   labs(title = 'Foreign Trade Deficit',
        caption="Source: TÜİK, TCMB", 
@@ -408,7 +408,7 @@ ggplot(foreign_trade, aes(x = Date)) +
        x = "Year") +
   theme_classic()
 ggplot(foreign_trade, aes(x = Date)) +
-  geom_line(aes(y = Deficit, fill = 'CAD (USD in billions)'), color = 'red') +
+  geom_line(aes(y = Deficit, fill = 'FTD (USD in billions)'), color = 'red') +
   geom_smooth(aes(y = Deficit), 
               color = 'red', alpha = TRUE) +
   geom_line(aes(y = Rate), color = 'blue') +
