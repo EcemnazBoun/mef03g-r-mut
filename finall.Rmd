@@ -360,7 +360,7 @@ Deficit <- Balance*(-1)
 ggplot(foreign_trade, aes(x = date, y = exports)) +
   geom_bar(stat ='identity', color = 'gray', fill = 'gray') +
   geom_line(stat ='identity', color = 'gray') +
-  labs(title = 'Exports (USD in billions)', 
+  labs(title = 'Exports (FOB, USD in billions)', 
        caption="Source: TÜİK", 
        y = "Exports",
        x = "Year") +
@@ -373,7 +373,7 @@ ggplot(foreign_trade, aes(x = date, y = exports)) +
 ggplot(foreign_trade, aes(x = Date, y = Imports)) +
   geom_bar(stat ='identity', color = 'gray', fill = 'gray') +
   geom_line(stat ='identity', color = 'gray') +
-  labs(title = 'Imports (USD in billions)', 
+  labs(title = 'Imports (CIF, USD in billions)', 
        caption="Source: TÜİK", 
        y = "Imports",
        x = "Year") +
@@ -394,15 +394,15 @@ ggplot(foreign_trade, aes(x = Date, y = Balance)) +
   theme_classic()
 ```
 
-## Comparison of interest rate and current account deficit
+## Comparison of interest rate and foreign trade deficit
 
-The graph shows the relationship between interest rate and current account deficit. Except for some periods, while one moves upwards, the other moves downwards.
+The graph shows the relationship between interest rate and foreign trade deficit. Except for some periods, while one moves upwards, the other moves downwards.
 
 ```{r message = FALSE, warning = FALSE}
 ggplot(foreign_trade, aes(x = Date)) +
   geom_line(aes(y = Deficit, color = 'CAD (USD in billions)')) +
   geom_line(aes(y = Rate, color = 'Interest Rate (%)')) +
-  labs(title = 'Current Account Deficit',
+  labs(title = 'Foreign Trade Deficit',
        caption="Source: TÜİK, TCMB", 
        y = "",
        x = "Year") +
@@ -414,7 +414,7 @@ ggplot(foreign_trade, aes(x = Date)) +
   geom_line(aes(y = Rate), color = 'blue') +
   geom_smooth(aes(y = Rate, color = 'Rate', fill = 'Interest Rate (%)'), 
               color = 'blue', alpha = TRUE) +
-  labs(title = 'Current Account Deficit',
+  labs(title = 'Foreign Trade Deficit',
        caption="Source: TÜİK, TCMB", 
        y = "",
        x = "Year") +
@@ -423,6 +423,6 @@ ggplot(foreign_trade, aes(x = Date)) +
 
 # Conclusion
 
-Interest rate and current account deficit mostly moves in the opposite direction. Except for some periods, while one moves upwards, the other moves downwards.
+Interest rate and foreign trade deficit mostly moves in the opposite direction. Except for some periods, while one moves upwards, the other moves downwards.
 
 # References
