@@ -338,14 +338,14 @@ ggplot(foreign_trade, aes(x = Date, y = Balance)) +
   theme_classic()
 ```
 
-### Comparison of interest rate and current account deficit
+### Comparison of interest rate and foreign trade deficit
 
 ```{r message = FALSE, warning = FALSE}
 
 ggplot(foreign_trade, aes(x = Date)) +
   geom_line(aes(y = Deficit, color = 'CAD (USD in billions)')) +
   geom_line(aes(y = Rate, color = 'Interest Rate (%)')) +
-  labs(title = 'Current Account Deficit',
+  labs(title = 'Foreign Trade Deficit',
        caption="Source: TÜİK, TCMB", 
        y = "",
        x = "Year") +
@@ -358,7 +358,7 @@ ggplot(foreign_trade, aes(x = Date)) +
   geom_line(aes(y = Rate), color = 'blue') +
   geom_smooth(aes(y = Rate, color = 'Rate', fill = 'Interest Rate (%)'), 
               color = 'blue', alpha = TRUE) +
-  labs(title = 'Current Account Deficit',
+  labs(title = 'Foreign Trade Deficit',
        caption="Source: TÜİK, TCMB", 
        y = "",
        x = "Year") +
